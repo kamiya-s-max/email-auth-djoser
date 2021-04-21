@@ -109,6 +109,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'ACTIVATION_URL': 'user_activation/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
+    'LOGIN_FIELD': 'email',
 }
 
 # Database
