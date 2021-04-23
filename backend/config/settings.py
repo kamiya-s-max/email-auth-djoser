@@ -107,9 +107,10 @@ SIMPLE_JWT = {
 
 # djoserでメール認証を行うための設定を追記
 DJOSER = {
-    'ACTIVATION_URL': 'user_activation/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
+    # 'USER_ID_FIELD': 'username',
     'LOGIN_FIELD': 'email',
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
 }
 
 # Database
@@ -152,6 +153,7 @@ AUTH_USER_MODEL = 'api.User'
 # Email送信を開発環境ではCLI上でテスト可能にする
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+SITE_NAME = 'worchive'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

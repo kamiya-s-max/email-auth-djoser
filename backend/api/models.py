@@ -5,5 +5,5 @@ import uuid
 
 class User(AbstractUser):
     """拡張ユーザーモデル"""
-    pass
+    email = models.EmailField(unique=True)
 
