@@ -155,7 +155,18 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'api.User'
 
 # Email送信を開発環境ではCLI上でテスト可能にする
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Emailを実際に送信する(mailcatcher docker使用debug)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# DEBUG = Trueのときmailcatcherを使う
+if DEBUG:
+    # ホストはdocker-composeのサービス名で指定する
+    EMAIL_HOST = 'smtp'
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_PORT = 1025
+    EMAIL_USE_TLS = False
 
 SITE_NAME = 'worchive'
 
