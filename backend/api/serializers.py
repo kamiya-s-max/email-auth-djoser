@@ -1,13 +1,41 @@
 from rest_framework import serializers
 from .models import User
 
+from djoser.conf import settings
+from djoser.serializers import UserCreateSerializer, TokenCreateSerializer
+from django.contrib.auth import authenticate
 
-class UserSerializer(serializers.ModelSerializer):
+
+class CustomTokenCreateSerializer(TokenCreateSerializer):
+    def validate(self, attrs):
+        password = attrs.get("password")
+        params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
+        self.user = authenticate(
+            request=self.context.get("request"), **params, password=password
+        )
+        if not self.user:
+            self.user = User.objects.filter(**params).first()
+            if self.user and not self.user.check_password(password):
+                self.fail("invalid_credentials")
+        # We changed only below line
+        if self.user: # and self.user.is_active:
+            return attrs
+        self.fail("invalid_credentials")
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    password = serializers.CharField(style={"input_type": "password"},
+                                     write_only=True)
+
+    default_error_messages = {
+        "cannot_create_user": settings.CONSTANTS.messages.CANNOT_CREATE_USER_ERROR
+    }
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True, 'required': True}}
+        fields = tuple(User.REQUIRED_FIELDS) + (
+            settings.LOGIN_FIELD,
+            settings.USER_ID_FIELD,
+            "password",
+        )
 
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user

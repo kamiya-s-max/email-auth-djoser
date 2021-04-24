@@ -107,10 +107,14 @@ SIMPLE_JWT = {
 
 # djoserでメール認証を行うための設定を追記
 DJOSER = {
-    # 'USER_ID_FIELD': 'username',
+    'USER_ID_FIELD': 'username',
     'LOGIN_FIELD': 'email',
     'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SERIALIZERS': {
+        'token_create': 'api.serializers.CustomTokenCreateSerializer',
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
+    },
 }
 
 # Database
