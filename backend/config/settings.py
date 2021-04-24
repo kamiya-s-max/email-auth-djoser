@@ -12,9 +12,15 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
-# datetimeとosをインポート
+# datetimeをインポート
 from datetime import timedelta
-import os
+
+# 環境変数管理をしやすくするためのenvironをimport
+import environ
+
+
+ENV = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -24,17 +30,18 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'bpwen8#^20v+#l1$!rt$fs@l%k6-*e$ancx99qfgvw&(az1y0q'
+SECRET_KEY = ENV('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 
 # docker内の環境のため、開発環境でもhostの許可設定が必要(本番では*は使わない)
 ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,6 +57,7 @@ INSTALLED_APPS = [
     'djoser',
 ]
 
+
 MIDDLEWARE = [
     # cors設定のためのミドルウェアを追加
     'corsheaders.middleware.CorsMiddleware',
@@ -63,12 +71,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 # フロントエンドアプリからのアクセスを許可する設定
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000'
 ]
 
+
 ROOT_URLCONF = 'config.urls'
+
 
 TEMPLATES = [
     {
@@ -86,7 +97,9 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'config.wsgi.application'
+
 
 REST_FRAMEWORK = {
     # デフォルトではログイン(認証)済みのユーザーのみビューを表示する設定
@@ -99,11 +112,13 @@ REST_FRAMEWORK = {
     ],
 }
 
+
 # simple JWTを使用するための設定(有効期限を30分に設定)
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
 }
+
 
 # djoserでメール認証を行うための設定を追記
 DJOSER = {
@@ -116,6 +131,7 @@ DJOSER = {
         'user_create': 'api.serializers.CustomUserCreateSerializer',
     },
 }
+
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -135,7 +151,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
